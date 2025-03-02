@@ -15,3 +15,7 @@ Belangrijke opmerkingen:
 - Zorg ervoor dat je firewall inkomend UDP-verkeer toestaat op de gekozen poort
 - Het voorbeeld gaat ervan uit dat de Pico tekstdata verstuurt; pas de data-verwerking aan als je andere formaten verstuurt
 - Je moet mogelijk de buffergrootte (1024 bytes) aanpassen afhankelijk van je datagrootte
+
+
+Door. Laurens Bracke
+Op: 2/3/2025
