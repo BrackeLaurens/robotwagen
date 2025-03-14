@@ -28,7 +28,7 @@ def check_collision():
     # Stel een drempelwaarde in voor botsingen
     threshold = 5  # Bijvoorbeeld 20 cm als botsingdrempel
     if distance < threshold:
-
+        motor_stop()        #zorg voor functie motor_stop
         print("Botsing gedetecteerd!")
 
 
