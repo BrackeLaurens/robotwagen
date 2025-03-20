@@ -7,6 +7,7 @@
     <header>
         <h1>Welkom bij de robotwagen webpagina</h1>
     </header>
+    <p> <div class="timer" id="timer">00:00:00</div></p>
     <p>Live score:</p>
     <div id="pico-data">
         Waiting for data...
@@ -90,5 +91,28 @@ text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}
         console.error("EventSource failed:", error);
         eventSource.close();
     };
+</script>
+<script>
+    function startTimer() {
+        let seconds = 0;
+        
+        setInterval(function() {
+            seconds++;
+            let hours = Math.floor(seconds / 3600);
+            let minutes = Math.floor((seconds % 3600) / 60);
+            let secs = seconds % 60;
+            
+            // Add leading zeros
+            hours = hours.toString().padStart(2, '0');
+            minutes = minutes.toString().padStart(2, '0');
+            secs = secs.toString().padStart(2, '0');
+            
+            document.getElementById('timer').textContent = 
+                `${hours}:${minutes}:${secs}`;
+        }, 1000);
+    }
+
+    // Start the timer when the page loads
+    window.onload = startTimer;
 </script>
 {% endblock %} 
