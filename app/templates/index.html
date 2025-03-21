@@ -20,7 +20,7 @@ text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}
 </style></head>
     <body><center><h1>Control Panel</h1></center><br><br>
 <form><center>
-    <center> <button class="buttonRed" name="noodknop" value="on" type="submit">NOODKNOP</button>
+    <center>  <button class="buttonRed" name="noodknop" onclick="sendCommand('noodstop')">NOODKNOP</button>
 </form>
 <br><br>
 </article>
@@ -77,6 +77,13 @@ text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}
             alert("Not connected to the PICO")
         }
     }
+</script>
+<script>
+    def sendCommand(command):
+    if command == 'noodstop':
+        print("Noodstop uitgevoerd!")
+        motorR_uit()
+        motorL_uit()
 </script>
 <script>
     const eventSource = new EventSource("/stream");
