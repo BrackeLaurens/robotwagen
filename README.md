@@ -1,3 +1,21 @@
+# Development
+
+## Installatie
+
+gebruik UV  (https://docs.astral.sh/uv/getting-started/installation/)
+
+```bash
+uv sync
+```
+
+
+```bash
+pip install -r requirements.txt
+```
+
+
+
+
 # Hoe werkt dit?
 
 Om dit werkend te krijgen:
