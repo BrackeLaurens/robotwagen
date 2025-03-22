@@ -1,18 +1,17 @@
+// Add this at the top of the file
+const SERVER_CONFIG = {
+    baseUrl: "http://192.168.4.1:80",
+    wsUrl: "ws://192.168.4.1:80"
+};
+
 let socket = undefined;
 
-function connect_test() {
-    fetch("http://192.168.4.1:80/connect-test")
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
-}
-
-
 function connect_socket() {
+    console.log("SOCKET - connect")
     // Close any existing sockets
     disconnect_socket();
 
-    socket = new WebSocket("ws://192.168.4.1:80/connect-websocket");
+    socket = new WebSocket(`${SERVER_CONFIG.wsUrl}/connect-websocket`);
 
     // Connection opened
     socket.addEventListener("open", (event) => {
@@ -53,8 +52,9 @@ function sendCommand(command) {
     }
 }
 
+/*
 // Event Source setup
-const eventSource = new EventSource("/stream");
+const eventSource = new EventSource(`${SERVER_CONFIG.baseUrl}/stream`);
 const dataDiv = document.getElementById("pico-data");
 
 eventSource.onmessage = function(event) {
@@ -66,6 +66,7 @@ eventSource.onerror = function(error) {
     console.error("EventSource failed:", error);
     eventSource.close();
 };
+*/
 
 // Timer functionality
 function startTimer() {

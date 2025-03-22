@@ -5,8 +5,7 @@
 {% block content %}
 <article>
     <header>
-        <h1>Welkom bij de robotwagen webpagina</h1>
-        <button class="buttonRed" onclick="connect_test()">TEST</button>
+        <h1>Welkom bij de robotwagen webpagina</h1>       
     </header>
     <p> <div class="timer" id="timer">00:00:00</div></p>
     <p>Live score:</p>
@@ -24,8 +23,6 @@
 </article>
 
 <h3 id="status">Status: Disconnected</h3>
-
-<button onclick="sendCommand('move_forward')">Move forward</button>
 
 <script src="{{ url_for('static', filename='main.js') }}"></script>
 <script>
