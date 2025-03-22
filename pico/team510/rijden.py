@@ -100,8 +100,9 @@ def draai_180_graden(snelheid):
     if linecount_uturn >=2 and -0.20<verschil_LR<0.20:
         vooruit(snelheid)
 
-while True:
+def rijscript():
     vooruit(snelheid)
+    line_count = 0
     licht_links = meet_ldr(ldr_left)
     licht_rechts = meet_ldr(ldr_right)
     licht_achter = meet_ldr(ldr_back)
@@ -137,7 +138,7 @@ while True:
 
 
 # Stel de analoge ingang in voor de ANALOG OUT pin van de US-100
-analog_in = AnalogIn(board.GPIO1) #verander gp27 eventueel naar de juiste positie
+#analog_in = AnalogIn(board.GPIO1) #verander gp27 eventueel naar de juiste positie
 
 
 
@@ -169,7 +170,9 @@ def check_collision():
 
 
 # Hoofdlus
+rijscript()
 while True:
     check_collision()
     time.sleep(0.1)
 
+# Write your code here :-)

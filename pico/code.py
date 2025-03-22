@@ -3,6 +3,7 @@ import wifi
 import time
 import board
 import digitalio
+#import team510.rijden as rijden
 
 from adafruit_httpserver import Server, Request, Response, GET, Websocket
 
@@ -22,16 +23,6 @@ led_state = False
 led = digitalio.DigitalInOut(board.LED)
 led.direction = digitalio.Direction.OUTPUT
 
-@server.route("/connect-test", GET)
-def connect_test(request: Request):
-    global led_blinking  # Use the global variable
-    led_blinking = True  # Set the flag to start blinking
-
-@server.route("/connect-stop", GET)
-def connect_stop(request: Request):
-    global led_blinking  # Use the global variable
-    led_blinking = False  # Set the flag to stop blinking
-
 # Deze functie wordt uitgevoerd wanneer de server een HTTP request ontvangt
 @server.route("/connect-websocket", GET)
 def connect_client(request: Request):
@@ -48,15 +39,27 @@ server.start(str(wifi.radio.ipv4_address_ap), 80)
 
 while True:
     server.poll()
-
-    # Check the led_blinking flag to control the LED
-    if led_blinking:
-        led_sate = not led_state
-        led.value = led_state
-
     if websocket is not None:
         data = websocket.receive(fail_silently=True)
         if data is not None:
-            print(data)
-            websocket.send_message(data, fail_silently=True)
-    time.sleep(0.1) 
+            # Check if the received data is "test"
+            if data == "noodstop":
+                
+                # rijden.motorR_uit()
+                # rijden.motorL_uit()
+                
+                led.value = True
+                time.sleep(0.1)
+                led.value = False
+                time.sleep(0.1)
+                led.value = True
+                time.sleep(0.1)
+                led.value = False
+                time.sleep(0.1)
+                led.value = True
+                time.sleep(0.1)
+                led.value = False
+                websocket.send_message("success", fail_silently=True)
+            else:
+                websocket.send_message(data, fail_silently=True)
+    time.sleep(0.1)
