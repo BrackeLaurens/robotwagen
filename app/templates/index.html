@@ -6,141 +6,34 @@
 <article>
     <header>
         <h1>Welkom bij de robotwagen webpagina</h1>
+        <button class="buttonRed" onclick="connect_test()">TEST</button>
     </header>
     <p> <div class="timer" id="timer">00:00:00</div></p>
     <p>Live score:</p>
     <div id="pico-data">
         Waiting for data...
     </div>
-    <head><meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:,">
-<style>
-html { 
-    font-family: Helvetica; 
-    display: inline-block; 
-    margin: 0px auto; 
-    text-align: center;
-}
-.buttonRed { 
-    background-color: #D11D53; 
-    border: 2px solid #000000;
-    color: white; 
-    padding: 15px 32px; 
-    text-align: center; 
-    text-decoration: none; 
-    display: inline-block; 
-    font-size: 30px; 
-    margin: 4px 2px; 
-    cursor: pointer; 
-}
-</style></head>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="data:,">
+        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    </head>
     <body><center><h1>Control Panel</h1></center><br><br>
-<<<<<<< HEAD
-<form><center>
-    <center>  <button class="buttonRed" name="noodknop" onclick="sendCommand('noodstop')">NOODKNOP</button>
-=======
-<form action="{{ url_for('emergency_stop') }}" method="POST">
-    <button class="buttonRed" name="noodknop" value="on" type="submit">NOODKNOP</button>
->>>>>>> 0649eb3 (implemented noodknop)
-</form>
-<br><br>
+        <button class="buttonRed" onclick="sendCommand('noodstop')">NOODKNOP</button>
+        <br><br>
 </article>
-<html>
-<body>
 
-<button onclick="connect_socket()">Connect</button>
 <h3 id="status">Status: Disconnected</h3>
 
 <button onclick="sendCommand('move_forward')">Move forward</button>
 
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script>
+    // Automatically connect when page loads
+    window.addEventListener('load', function() {
+        connect_socket();
+    });
+</script>
 </body>
 </html>
-
-<script>
-    let socket = undefined;
-
-    function connect_socket() {
-        // Close any existing sockets
-        disconnect_socket();
-
-        socket = new WebSocket("ws://192.168.4.1:80/connect-websocket");
-
-        // Connection opened
-        socket.addEventListener("open", (event) => {
-            document.getElementById("status").textContent = "Status: Connected";
-        });
-
-        socket.addEventListener("close", (event) => {
-            socket = undefined;
-            document.getElementById("status").textContent = "Status: Disconnected";
-        });
-
-        socket.addEventListener("message", (event) => {
-            console.log(event.data)
-        });
-
-        socket.addEventListener("error", (event) => {
-            socket = undefined;
-            document.getElementById("status").textContent = "Status: Disconnected";
-        });
-    }
-
-    function disconnect_socket() {
-        if(socket != undefined) {
-            socket.close();
-        }
-    }
-
-    function sendCommand(command) {
-        if(socket != undefined) {
-            socket.send(command)
-        } else {
-            alert("Not connected to the PICO")
-        }
-    }
-</script>
-<script>
-    def sendCommand(command):
-    if command == 'noodstop':
-        print("Noodstop uitgevoerd!")
-        motorR_uit()
-        motorL_uit()
-</script>
-<script>
-    const eventSource = new EventSource("/stream");
-    const dataDiv = document.getElementById("pico-data");
-    
-    eventSource.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-        dataDiv.textContent = "Received data: " + data.value;
-    };
-
-    eventSource.onerror = function(error) {
-        console.error("EventSource failed:", error);
-        eventSource.close();
-    };
-</script>
-<script>
-    function startTimer() {
-        let seconds = 0;
-        
-        setInterval(function() {
-            seconds++;
-            let hours = Math.floor(seconds / 3600);
-            let minutes = Math.floor((seconds % 3600) / 60);
-            let secs = seconds % 60;
-            
-            // Add leading zeros
-            hours = hours.toString().padStart(2, '0');
-            minutes = minutes.toString().padStart(2, '0');
-            secs = secs.toString().padStart(2, '0');
-            
-            document.getElementById('timer').textContent = 
-                `${hours}:${minutes}:${secs}`;
-        }, 1000);
-    }
-
-    // Start the timer when the page loads
-    window.onload = startTimer;
-</script>
 {% endblock %} 
