@@ -3,7 +3,7 @@ import wifi
 import time
 import board
 import digitalio
-#import team510.rijden as rijden
+import pico.team510.rijden as rijden
 
 from adafruit_httpserver import Server, Request, Response, GET, Websocket
 
