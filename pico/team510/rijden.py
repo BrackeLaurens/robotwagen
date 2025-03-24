@@ -111,6 +111,7 @@ def draai_180_graden(snelheid):
 
 def go():
     rijden_actief = True #lol
+    print('yellah')
 
 
 while rijden_actief:
