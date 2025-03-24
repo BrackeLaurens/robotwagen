@@ -13,6 +13,7 @@ ldr_back = analogio.AnalogIn(board.GP26)  # ldr Achteraan
 snelheid = 50 #snelheid voor alle maneuvers tijdens de uitvoering, kan later aangepast worden.
 bochtcount = 0
 line_count = 0
+rijden_actief = False
 
 motor_aan_uitR = pwmio.PWMOut(board.GP17,frequency=1000)
 motor_richtingR = digitalio.DigitalInOut(board.GP16)
@@ -28,6 +29,7 @@ def motorR_aan(snelheid):
 
 def motorR_uit():
     motor_aan_uitR.duty_cycle = 0
+    rijden_actief = False
 
 def achteruitR():
     motor_richtingR.value=True
@@ -41,6 +43,7 @@ def motorL_aan(snelheid):
 
 def motorL_uit():
     motor_aan_uitL.duty_cycle = 0
+    rijden_actief = False
 
 def achteruitL():
     motor_richtingL.value=True
@@ -106,10 +109,11 @@ def draai_180_graden(snelheid):
     vooruit(snelheid)
 
 
+def go():
+    rijden_actief = True
 
 
-
-while True:
+while rijden_actief:
     vooruit(snelheid)
     verschil_LR = meet_ldr(ldr_left) - meet_ldr(ldr_right)
     #printen van de voltages van de 3 ldr's om betere testen uit te voeren.
