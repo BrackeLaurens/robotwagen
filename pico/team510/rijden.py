@@ -1,13 +1,18 @@
+# Write your code here :-)
+#Besturingsalgoritme zelfrijdende robotwagen
+
 import time
 import board
 import pwmio
 import digitalio
 import analogio
-ldr_left = analogio.AnalogIn(board.GP27)  # LDR Links vooraan
-ldr_right = analogio.AnalogIn(board.GP28)  # LDR Rechts vooraan
-ldr_back = analogio.AnalogIn(board.GP26)  # LDR Achteraan
+ldr_right = analogio.AnalogIn(board.GP28)  # ldr rechts vooraan
+ldr_left = analogio.AnalogIn(board.GP27)  # ldr links vooraan
+ldr_back = analogio.AnalogIn(board.GP26)  # ldr Achteraan
 
-snelheid = 50
+snelheid = 50 #snelheid voor alle maneuvers tijdens de uitvoering, kan later aangepast worden.
+bochtcount = 0
+line_count = 0
 
 motor_aan_uitR = pwmio.PWMOut(board.GP17,frequency=1000)
 motor_richtingR = digitalio.DigitalInOut(board.GP16)
@@ -45,14 +50,12 @@ def vooruitL():
 
 #defenities
 DREMPEL_ZWARTE_LIJN_achter = 1.25
-DREMPEL_ZWARTE_LIJN_links = 1.10
-DREMPEL_ZWARTE_LIJN_rechts = 1.10
-VERSCHIL_AFWIJKING_RECHTS = 0.10
-VERSCHIL_AFWIJKING_LINKS = -0.10
-line_count = 0
+DREMPEL_ZWARTE_LIJN_links = 1.45
+DREMPEL_ZWARTE_LIJN_rechts = 1.45
+
 
 def meet_ldr(ldr):
-    return ldr.value * (3.3 / 65535)  # Converteer ADC naar spanning (0 - 3.3V)
+    return ldr.value * (3.3 / 65535)  # Converteren naar spanning in Volt (0 - 3.3V)
 
 def vooruit(snelheid):
     vooruitL()
@@ -67,112 +70,90 @@ def achteruit(snelheid):
     motorL_aan(snelheid)
 
 def draai_rechts(snelheid):
-    while True:
-        achteruitR()
-        vooruitL()
-        motorR_aan(snelheid)
-        motorL_aan(snelheid)
-        if meet_ldr(ldr_left) < DREMPEL_ZWARTE_LIJN_links and -0.20< verschil_LR <0.20:
-            vooruit(snelheid)
-            break
-        time.sleep(0.05)
+    achteruitR()
+    vooruitL()
+    motorR_aan(snelheid)
+    motorL_aan(snelheid)
 
+    while meet_ldr(ldr_right) > DREMPEL_ZWARTE_LIJN_rechts:
+        print(meet_ldr(ldr_right))
+        time.sleep(0.1)
 
 def draai_links(snelheid):
-    while True:
-        vooruitR()
-        achteruitL()
-        motorR_aan(snelheid)
-        motorL_aan(snelheid)
-        if meet_ldr(ldr_right) < DREMPEL_ZWARTE_LIJN_rechts and -0.20< verschil_LR <0.20:
-            vooruit(snelheid)
-            break
-        time.sleep(0.05)
+    achteruitL()
+    vooruitR()
+    motorR_aan(snelheid)
+    motorL_aan(snelheid)
+
+    while meet_ldr(ldr_left) > DREMPEL_ZWARTE_LIJN_links:
+        #print(meet_ldr(ldr_left))
+        time.sleep(0.1)
 
 
 def draai_180_graden(snelheid):
-    draai_links(snelheid)
+    achteruitL()
+    vooruitR()
+    motorR_aan(snelheid)
+    motorL_aan(snelheid)
+
     linecount_uturn = 0
-    if meet_ldr(ldr_left) < DREMPEL_ZWARTE_LIJN_links:
-        linecount_uturn += 1
-        while meet_ldr(ldr_left) < DREMPEL_ZWARTE_LIJN_links:
-            time.sleep(0.1)
-    if linecount_uturn >=2 and -0.20<verschil_LR<0.20:
-        vooruit(snelheid)
-
-def rijscript():
+    while linecount_uturn < 2:
+        if meet_ldr(ldr_left) <= DREMPEL_ZWARTE_LIJN_links:
+            linecount_uturn += 1
+            while meet_ldr(ldr_left) <= DREMPEL_ZWARTE_LIJN_links:
+                time.sleep(0.05)
+        time.sleep(0.05)
     vooruit(snelheid)
-    line_count = 0
-    licht_links = meet_ldr(ldr_left)
-    licht_rechts = meet_ldr(ldr_right)
-    licht_achter = meet_ldr(ldr_back)
-    verschil_LR=licht_rechts-licht_links
 
-    print(f"LDR Links: {licht_links:.2f}V | LDR Rechts: {licht_rechts:.2f}V | LDR Achter: {licht_achter:.2f}V")
 
-    zwart_links = licht_links < DREMPEL_ZWARTE_LIJN_links
-    zwart_rechts = licht_rechts < DREMPEL_ZWARTE_LIJN_rechts
-    zwart_achter = licht_achter < DREMPEL_ZWARTE_LIJN_achter
-    
-    if zwart_achter:
-        print("Zwarte lijn achteraan voorbij")
+
+
+
+while True:
+    vooruit(snelheid)
+    verschil_LR = meet_ldr(ldr_left) - meet_ldr(ldr_right)
+    #printen van de voltages van de 3 ldr's om betere testen uit te voeren.
+    #print(f"LDR Links: {meet_ldr(ldr_left):.2f}V | LDR Rechts: {meet_ldr(ldr_right):.2f}V | LDR Achter: {meet_ldr(ldr_back):.2f}V")
+
+    zwart_links = meet_ldr(ldr_left) < DREMPEL_ZWARTE_LIJN_links
+    zwart_rechts = meet_ldr(ldr_right) < DREMPEL_ZWARTE_LIJN_rechts
+    zwart_achter = meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter
+
+    if zwart_achter: #linecounter voor achterste ldr (om te weten wanneer er moet gedraaid worden)
         line_count += 1
+        print(line_count)
         while meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter: #wachten met counten tot zwarte lijn voorbij is.
             time.sleep(0.1)
-    
+
     # Voorste LDR’s sturen bij zodat auto zwarte lijn volgt.
     if -0.20<verschil_LR < 0.20:  #als het verschil tussen de 2 ldr's niet groot is, zit hij op de lijn.
         vooruit(snelheid)
 
-    elif zwart_links: #afwijking naar rechts
+    elif zwart_links: #afwijking naar rechts (linkse ldr komt over zwarte lijn)
         motorR_aan(snelheid + 10)
         motorL_aan(snelheid - 10)
 
-    elif zwart_rechts: #afwijking naar links
+    elif zwart_rechts: #afwijking naar links (rechtse ldr komt over zwarte lijn)
         motorR_aan(snelheid - 10)
         motorL_aan(snelheid + 10)
 
-    else:
+    else: #er is niks aan de hand, auto moet gewoon vooruit rijden.
         vooruit(snelheid)
     time.sleep(0.1)
 
-
-# Stel de analoge ingang in voor de ANALOG OUT pin van de US-100
-#analog_in = AnalogIn(board.GPIO1) #verander gp27 eventueel naar de juiste positie
-
-
-
-def get_voltage(pin):
-    """Bereken de spanning op de pin"""
-    return (pin.value * 3.3) / 65535  # 65535 is de maximale waarde voor een 16-bits ADC
-
-
-def get_distance():
-    """Bereken de afstand in cm op basis van de analoge spanning"""
-    voltage = get_voltage(analog_in)
-    # Zet de spanning om naar afstand (0V = 0 cm, 5V = 400 cm)
-    distance = (voltage / 3.3) * 400
-    return distance
-
-
-def check_collision():
-    """Controleer of een object dichtbij is op basis van de afstand"""
-    distance = get_distance()
-    print("Afstand:", round(distance, 2), "cm")
-
-    # Stel een drempelwaarde in voor botsingen
-    threshold = 5  # Bijvoorbeeld 20 cm als botsingdrempel
-    if distance < threshold:
-        motorL_uit()       
+    if line_count == 2 and bochtcount !=3:
+        draai_links(snelheid)
+        line_count = 0
+        bochtcount += 1
+        print(f'bocht={bochtcount}')
+    if line_count == 2 and bochtcount ==3:
         motorR_uit()
-        print("Botsing gedetecteerd!")
+        motorL_uit()
+        print("einde")
+        break
+    '''
+    if line_count == 2:
+        draai_180_graden(snelheid)
+        line_count = 0
+    '''
 
-
-
-# Hoofdlus
-rijscript()
-while True:
-    check_collision()
-    time.sleep(0.1)
-
-# Write your code here :-)
