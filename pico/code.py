@@ -44,7 +44,7 @@ while True:
         if data is not None:
             # Check if the received data is "test"
             if data == 'start':
-                rijden.go()
+                rijden.go() # test
                 led.value = True
                 time.sleep(0.1)
                 led.value = False
