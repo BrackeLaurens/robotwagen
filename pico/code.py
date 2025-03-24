@@ -44,7 +44,7 @@ while True:
         if data is not None:
             # Check if the received data is "test"
             if data == 'start':
-                actief = true
+                actief = True
             if data == "noodstop":
                 
                 # rijden.motorR_uit()
