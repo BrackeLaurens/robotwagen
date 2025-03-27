@@ -57,9 +57,7 @@ while True:
                 time.sleep(0.1)
                 led.value = False
                 websocket.send_message("success", fail_silently=True)
-            else:
-                websocket.send_message(data, fail_silently=True)
-            if data == "noodstop":
+            elif data == "noodstop":
                 rijden.motorR_uit()
                 rijden.motorL_uit()
                 led.value = True

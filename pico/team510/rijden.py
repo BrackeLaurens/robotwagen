@@ -110,7 +110,9 @@ def draai_180_graden(snelheid):
 
 
 def go():
+    global rijden_actief
     rijden_actief = True #lol
+    assert rijden_actief == True, 'rijden_actief moet True zijn'
     print('yellah')
 
 
