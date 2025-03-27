@@ -29,6 +29,7 @@ def motorR_aan(snelheid):
 
 def motorR_uit():
     motor_aan_uitR.duty_cycle = 0
+    global rijden_actief
     rijden_actief = False
 
 def achteruitR():
@@ -43,6 +44,7 @@ def motorL_aan(snelheid):
 
 def motorL_uit():
     motor_aan_uitL.duty_cycle = 0
+    global rijden_actief
     rijden_actief = False
 
 def achteruitL():
