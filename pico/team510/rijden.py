@@ -127,7 +127,9 @@ def go():
         zwart_rechts = meet_ldr(ldr_right) < DREMPEL_ZWARTE_LIJN_rechts
         zwart_achter = meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter
         print('yellah 2')
+
         if zwart_achter: #linecounter voor achterste ldr (om te weten wanneer er moet gedraaid worden)
+            global line_count
             line_count += 1
             print(line_count)
             while meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter: #wachten met counten tot zwarte lijn voorbij is.
@@ -148,7 +150,7 @@ def go():
         else: #er is niks aan de hand, auto moet gewoon vooruit rijden.
             vooruit(snelheid)
         time.sleep(0.1)
-
+        global line_count
         if line_count == 2 and bochtcount !=3:
             draai_links(snelheid)
             line_count = 0
