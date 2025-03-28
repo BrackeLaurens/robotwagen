@@ -117,52 +117,51 @@ def go():
     assert rijden_actief == True, 'rijden_actief moet True zijn'
     print('yellah')
 
-
-while rijden_actief:
-    vooruit(snelheid)
-    verschil_LR = meet_ldr(ldr_left) - meet_ldr(ldr_right)
-    #printen van de voltages van de 3 ldr's om betere testen uit te voeren.
-    #print(f"LDR Links: {meet_ldr(ldr_left):.2f}V | LDR Rechts: {meet_ldr(ldr_right):.2f}V | LDR Achter: {meet_ldr(ldr_back):.2f}V")
-
-    zwart_links = meet_ldr(ldr_left) < DREMPEL_ZWARTE_LIJN_links
-    zwart_rechts = meet_ldr(ldr_right) < DREMPEL_ZWARTE_LIJN_rechts
-    zwart_achter = meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter
-
-    if zwart_achter: #linecounter voor achterste ldr (om te weten wanneer er moet gedraaid worden)
-        line_count += 1
-        print(line_count)
-        while meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter: #wachten met counten tot zwarte lijn voorbij is.
-            time.sleep(0.1)
-
-    # Voorste LDR’s sturen bij zodat auto zwarte lijn volgt.
-    if -0.20<verschil_LR < 0.20:  #als het verschil tussen de 2 ldr's niet groot is, zit hij op de lijn.
+    while rijden_actief:
         vooruit(snelheid)
+        verschil_LR = meet_ldr(ldr_left) - meet_ldr(ldr_right)
+        #printen van de voltages van de 3 ldr's om betere testen uit te voeren.
+        #print(f"LDR Links: {meet_ldr(ldr_left):.2f}V | LDR Rechts: {meet_ldr(ldr_right):.2f}V | LDR Achter: {meet_ldr(ldr_back):.2f}V")
 
-    elif zwart_links: #afwijking naar rechts (linkse ldr komt over zwarte lijn)
-        motorR_aan(snelheid + 10)
-        motorL_aan(snelheid - 10)
+        zwart_links = meet_ldr(ldr_left) < DREMPEL_ZWARTE_LIJN_links
+        zwart_rechts = meet_ldr(ldr_right) < DREMPEL_ZWARTE_LIJN_rechts
+        zwart_achter = meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter
+        print('yellah 2')
+        if zwart_achter: #linecounter voor achterste ldr (om te weten wanneer er moet gedraaid worden)
+            line_count += 1
+            print(line_count)
+            while meet_ldr(ldr_back) < DREMPEL_ZWARTE_LIJN_achter: #wachten met counten tot zwarte lijn voorbij is.
+                time.sleep(0.1)
 
-    elif zwart_rechts: #afwijking naar links (rechtse ldr komt over zwarte lijn)
-        motorR_aan(snelheid - 10)
-        motorL_aan(snelheid + 10)
+        # Voorste LDR’s sturen bij zodat auto zwarte lijn volgt.
+        if -0.20<verschil_LR < 0.20:  #als het verschil tussen de 2 ldr's niet groot is, zit hij op de lijn.
+            vooruit(snelheid)
 
-    else: #er is niks aan de hand, auto moet gewoon vooruit rijden.
-        vooruit(snelheid)
-    time.sleep(0.1)
+        elif zwart_links: #afwijking naar rechts (linkse ldr komt over zwarte lijn)
+            motorR_aan(snelheid + 10)
+            motorL_aan(snelheid - 10)
 
-    if line_count == 2 and bochtcount !=3:
-        draai_links(snelheid)
-        line_count = 0
-        bochtcount += 1
-        print(f'bocht={bochtcount}')
-    if line_count == 2 and bochtcount ==3:
-        motorR_uit()
-        motorL_uit()
-        print("einde")
-        break
-    '''
-    if line_count == 2:
-        draai_180_graden(snelheid)
-        line_count = 0
-    '''
+        elif zwart_rechts: #afwijking naar links (rechtse ldr komt over zwarte lijn)
+            motorR_aan(snelheid - 10)
+            motorL_aan(snelheid + 10)
+
+        else: #er is niks aan de hand, auto moet gewoon vooruit rijden.
+            vooruit(snelheid)
+        time.sleep(0.1)
+
+        if line_count == 2 and bochtcount !=3:
+            draai_links(snelheid)
+            line_count = 0
+            bochtcount += 1
+            print(f'bocht={bochtcount}')
+        if line_count == 2 and bochtcount ==3:
+            motorR_uit()
+            motorL_uit()
+            print("einde")
+            break
+        '''
+        if line_count == 2:
+            draai_180_graden(snelheid)
+            line_count = 0
+        '''
 
