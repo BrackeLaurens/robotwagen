@@ -26,6 +26,33 @@
 <h3 id="status">Status: Disconnected</h3>
 
 <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script>
+    // Stel hier de tijd in (bijvoorbeeld 1 uur, 2 minuten, 30 seconden)
+    let totaalSeconden = (5 * 60) ;
+
+    const timerElement = document.getElementById('timer');
+
+    function updateTimer() {
+      const uren = Math.floor(totaalSeconden / 3600);
+      const minuten = Math.floor((totaalSeconden % 3600) / 60);
+      const seconden = totaalSeconden % 60;
+
+      timerElement.textContent =
+        `${String(uren).padStart(2, '0')}:${String(minuten).padStart(2, '0')}:${String(seconden).padStart(2, '0')}`;
+
+      if (totaalSeconden > 0) {
+        totaalSeconden--;
+      } else {
+        clearInterval(timer);
+        timerElement.textContent = "00:00:00";
+        // Je kunt hier ook iets anders laten gebeuren, zoals een melding
+      }
+    }
+
+    // Start de timer
+    updateTimer(); // meteen de eerste keer
+    const timer = setInterval(updateTimer, 1000);
+  </script>
 <script>
     // Automatically connect when page loads
     window.addEventListener('load', function() {

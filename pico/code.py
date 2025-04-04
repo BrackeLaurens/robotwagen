@@ -7,6 +7,11 @@ import pico.team510.rijden as rijden
 
 from adafruit_httpserver import Server, Request, Response, GET, Websocket
 
+score = 0
+last_score_sent = time.monotonic()
+
+previous_state = False  # Neem aan dat de motor eerst uit is
+
 SSID = "PICO-TEAM-510"  # Verander X naar groepsnummer
 PASSWORD = "CENTRIS123"  # Verander voor veiligheidsredenen
 
@@ -74,4 +79,17 @@ while True:
                 websocket.send_message("success", fail_silently=True)
             else:
                 websocket.send_message(data, fail_silently=True)
+        # Stap 1: Voeg de logica toe om de score alleen te verhogen als de waarde verandert
+        # Voorbeeld: stel dat de waarde van een motor een boolean is (True/False)
+        motor_state = rijden.grijp()  # Bijv. de status van de motor zorg dat de functie in rijden bestaat
+
+        # Als de staat van de motor verandert (True naar False of andersom), verhoog de score
+        if motor_state != previous_state:
+            score += 100
+            previous_state = motor_state  # Update de vorige staat
+
+        # Stap 2: Stuur de score naar de webapp elke 2 seconden
+        if websocket is not None and (time.monotonic() - last_score_sent) > 2:
+            websocket.send_message(f"score:{score}", fail_silently=True)
+            last_score_sent = time.monotonic()
     time.sleep(0.1)

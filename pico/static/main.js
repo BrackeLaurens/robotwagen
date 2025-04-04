@@ -1,92 +1,118 @@
-// Add this at the top of the file
 const SERVER_CONFIG = {
     baseUrl: "http://192.168.4.1:80",
     wsUrl: "ws://192.168.4.1:80"
 };
 
 let socket = undefined;
+let timerInterval = null;
+let totaalSeconden = 5 * 60; // 5 minuten
 
 function connect_socket() {
-    console.log("SOCKET - connect")
-    // Close any existing sockets
-    disconnect_socket();
+    console.log("SOCKET - connect");
+    disconnect_socket(); // sluit bestaande socket indien aanwezig
 
     socket = new WebSocket(`${SERVER_CONFIG.wsUrl}/connect-websocket`);
 
-    // Connection opened
-    socket.addEventListener("open", (event) => {
+    socket.addEventListener("open", () => {
         document.getElementById("status").textContent = "Status: Connected";
     });
 
-    socket.addEventListener("close", (event) => {
+    socket.addEventListener("close", () => {
         socket = undefined;
         document.getElementById("status").textContent = "Status: Disconnected";
     });
 
     socket.addEventListener("message", (event) => {
-        console.log(event.data)
-    });
+  console.log("Message from Pico:", event.data);
 
-    socket.addEventListener("error", (event) => {
+  if (event.data.startsWith("score:")) {
+    const score = event.data.split(":")[1];
+    document.getElementById("live-score").textContent = score;
+    return;
+  }
+
+  // Andere commando's
+  switch (event.data) {
+    case "start":
+      startTimer();
+      break;
+    case "noodstop":
+      stopTimer();
+      break;
+    default:
+      console.warn("⚠️ Onbekend commando ontvangen:", event.data);
+      break;
+  }
+});
+
+
+    socket.addEventListener("error", () => {
         socket = undefined;
         document.getElementById("status").textContent = "Status: Disconnected";
     });
 }
 
 function disconnect_socket() {
-    if(socket != undefined) {
+    if (socket != undefined) {
         socket.close();
     }
 }
 
 function sendCommand(command) {
-    if(socket != undefined) {
-        socket.send(command)
+    if (socket != undefined && socket.readyState === WebSocket.OPEN) {
+        socket.send(command);
+
         if (command === 'noodstop') {
-            console.log("Emergency stop initiated!");
-            // You can add visual feedback here if needed
             document.getElementById("status").textContent = "Status: EMERGENCY STOP";
+            console.log("Emergency stop initiated!");
+            stopTimer(); // timer pauzeren/stoppen
         }
+
+        if (command === 'start') {
+            startTimer();
+        }
+
     } else {
-        alert("Not connected to the PICO")
+        alert("Not connected to the PICO");
     }
 }
 
-/*
-// Event Source setup
-const eventSource = new EventSource(`${SERVER_CONFIG.baseUrl}/stream`);
-const dataDiv = document.getElementById("pico-data");
-
-eventSource.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    dataDiv.textContent = "Received data: " + data.value;
-};
-
-eventSource.onerror = function(error) {
-    console.error("EventSource failed:", error);
-    eventSource.close();
-};
-*/
-
-// Timer functionality
 function startTimer() {
-    let seconds = 0;
-    
-    setInterval(function() {
-        seconds++;
-        let hours = Math.floor(seconds / 3600);
-        let minutes = Math.floor((seconds % 3600) / 60);
-        let secs = seconds % 60;
-        
-        // Add leading zeros
-        hours = hours.toString().padStart(2, '0');
-        minutes = minutes.toString().padStart(2, '0');
-        secs = secs.toString().padStart(2, '0');
-        
-        document.getElementById('timer').textContent = 
-            `${hours}:${minutes}:${secs}`;
+    stopTimer(); // Reset als hij al loopt
+    totaalSeconden = 5 * 60;
+
+    updateTimerDisplay(); // Toon meteen de starttijd
+
+    timerInterval = setInterval(() => {
+        if (totaalSeconden > 0) {
+            totaalSeconden--;
+            updateTimerDisplay();
+        } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById("timer").textContent = "00:00:00";
+            console.log("Timer afgelopen.");
+        }
     }, 1000);
 }
 
-// Start the timer when the page loads
-window.onload = startTimer; 
+function stopTimer() {
+    if (timerInterval !== null) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function updateTimerDisplay() {
+    const uren = Math.floor(totaalSeconden / 3600);
+    const minuten = Math.floor((totaalSeconden % 3600) / 60);
+    const seconden = totaalSeconden % 60;
+
+    document.getElementById("timer").textContent =
+        `${String(uren).padStart(2, '0')}:${String(minuten).padStart(2, '0')}:${String(seconden).padStart(2, '0')}`;
+}
+
+// Socket automatisch verbinden bij laden
+window.addEventListener('load', function () {
+    connect_socket();
+});
