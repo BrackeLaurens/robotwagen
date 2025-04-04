@@ -1,38 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="main.css">
-    <script src="main.js"></script>
-    <title>Robotwagen - Team 510</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="main.css" />
+  <title>Robotwagen - Team 510</title>
 </head>
 <body>
-    <article>
-        <header>
-            <h1>Welkom bij de Robotwagen</h1>       
-        </header>
-        <p><div class="timer" id="timer">00:00:00</div></p>
-        <p>Live score:</p>
-        <div id="pico-data">
-            Waiting for data...
-        </div>
-    </article>
+  <article>
+    <header>
+      <h1>Welkom bij de Robotwagen</h1>
+    </header>
+    <p><div class="timer" id="timer">00:00:00</div></p>
+    <p>Live score:</p>
+    <div id="pico-data">Waiting for data...</div>
+  </article>
 
-    <center><h1>Control Panel</h1></center><br><br>
-    <button class="buttonRed" onclick="sendCommand('noodstop')">NOODKNOP</button>
-    <button class="buttonBlue" onclick="sendCommand('start')">START</button>
-    <br><br>
+  <center><h1>Control Panel</h1></center><br><br>
+  <button class="buttonRed" onclick="sendCommand('noodstop')">NOODKNOP</button>
+  <button class="buttonBlue" onclick="sendCommand('start')">START</button>
+  <br><br>
 
-    <h3 id="status">Status: Disconnected</h3>
+  <h3 id="status">Status: Disconnected</h3>
 
-    <script src="main.js"></script>
-    <script>
-        // Automatically connect when page loads
-        window.addEventListener('load', function() {
-            connect_socket();
-        });
-    </script>
+  <!-- Eén enkele script: alles zit in main.js -->
+  <script src="main.js"></script>
 </body>
-</html> 
+</html>
