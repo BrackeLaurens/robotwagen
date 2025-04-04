@@ -23,11 +23,21 @@ function connect_socket() {
     });
 
     socket.addEventListener("message", (event) => {
-        console.log("Message from Pico:", event.data);
-        if (event.data === "start") {
-            startTimer(); // Timer starten via bericht van Pico
-        }
-    });
+    console.log("Message from Pico:", event.data);
+
+    switch (event.data) {
+        case "start":
+            startTimer();
+            break;
+        case "noodstop":
+            stopTimer();
+            break;
+        // Extra gevallen kun je hier toevoegen
+        default:
+            console.warn("⚠️ Onbekend commando ontvangen:", event.data);
+            break;
+    }
+});
 
     socket.addEventListener("error", () => {
         socket = undefined;
