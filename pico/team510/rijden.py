@@ -34,9 +34,13 @@ def motorR_aan(snelheid):
 
 
 def motorR_uit():
-    motor_aan_uitR.duty_cycle = 0
     global rijden_actief
+    print("[DEBUG] Rechts motor UIT aangevraagd")  # Debug print
+    motor_aan_uitR.duty_cycle = 0
     rijden_actief = False
+    assert motor_aan_uitR.duty_cycle == 0, 'duty cycle (R) moet 0 zijn'
+    print('motorR is uit')
+    assert rijden_actief == False, 'rijden actief moet false zijn'
 
 
 def achteruitR():
@@ -53,13 +57,18 @@ def motorL_aan(snelheid):
 
 
 def motorL_uit():
-    motor_aan_uitL.duty_cycle = 0
     global rijden_actief
+    print("[DEBUG] Links motor UIT aangevraagd")  # Debug print
+    motor_aan_uitL.duty_cycle = 0
     rijden_actief = False
+    assert motor_aan_uitL.duty_cycle == 0, 'duty cycle moet 0 zijn'
+    print('motorL is uit')
+    assert rijden_actief == False, 'rijden actief moet false zijn'
 
 
 def achteruitL():
     motor_richtingL.value = True
+    #buzzer toevoegen
 
 
 def vooruitL():
@@ -139,13 +148,24 @@ def go():
 my_servo = servo.Servo(pwm)
 
 
+
+grijp_actief = False  # Globale variabele
+
+    # Pas de grijp-functie aan:
 def grijp():
+    global grijp_actief
+    grijp_actief = True
+
+        # Servo beweging (originele code)
     for angle in range(0, 170, 5):
         my_servo.angle = angle
         time.sleep(0.05)
     for angle in range(170, 0, -5):
         my_servo.angle = angle
         time.sleep(0.05)
+
+    grijp_actief = False
+    return True  # Of retourneer een status indien nodig
 
 
 while rijden_actief:
