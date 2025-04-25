@@ -85,7 +85,7 @@ while True:
                 websocket.send_message("success", fail_silently=True)
             else:
                 websocket.send_message(data, fail_silently=True)
-
+# live score
         if motor_running and rijden.grijp_actief:  # Check of grijpcyclus bezig is
             score += 100
             if websocket is not None:
