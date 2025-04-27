@@ -116,3 +116,115 @@ function updateTimerDisplay() {
 window.addEventListener('load', function () {
     connect_socket();
 });
+
+
+
+
+
+// WebSocket management
+let ws;
+let isConnected = false;
+const maxReconnectAttempts = 5;
+let reconnectAttempts = 0;
+
+function connectWebSocket() {
+    ws = new WebSocket('ws://192.168.4.1/connect-websocket');
+
+    // Verbinding geslaagd
+    ws.onopen = () => {
+        isConnected = true;
+        reconnectAttempts = 0;
+        updateStatus("Verbonden");
+        console.log("WebSocket verbonden");
+    };
+
+    // Verbinding verbroken
+    ws.onclose = () => {
+        isConnected = false;
+        updateStatus("Verbinding verbroken - opnieuw verbinden...");
+        console.log("WebSocket verbinding gesloten");
+
+        if (reconnectAttempts < maxReconnectAttempts) {
+            reconnectAttempts++;
+            setTimeout(connectWebSocket, 1000); // Reconnect na 1 seconde
+        } else {
+            updateStatus("Fout: Kan niet verbinden");
+        }
+    };
+
+    // Berichten ontvangen
+    ws.onmessage = (e) => {
+        console.log("Ontvangen:", e.data);
+
+        if (e.data.startsWith("score:")) {
+            updateScore(e.data.split(":")[1]);
+        } else if (e.data === "started") {
+            updateStatus("Actief - verbonden");
+        } else if (e.data === "stopped") {
+            updateStatus("Gepauzeerd - verbonden");
+        }
+    };
+
+    ws.onerror = (error) => {
+        console.error("WebSocket fout:", error);
+        updateStatus("Fout in verbinding");
+    };
+}
+
+// Helper functies
+function updateStatus(message) {
+    const statusElement = document.getElementById("status");
+    if (statusElement) {
+        statusElement.textContent = `Status: ${message}`;
+        // Kleuraanpassingen gebaseerd op status
+        if (message.includes("Verbonden")) statusElement.style.color = "green";
+        else if (message.includes("Fout")) statusElement.style.color = "red";
+        else statusElement.style.color = "orange";
+    }
+}
+
+function updateScore(newScore) {
+    const scoreElement = document.getElementById("live-score");
+    if (scoreElement) {
+        scoreElement.textContent = newScore;
+        // Visuele feedback bij score-update
+        scoreElement.classList.add("score-update");
+        setTimeout(() => scoreElement.classList.remove("score-update"), 300);
+    }
+}
+
+// Knop handlers
+function setupButtonListeners() {
+    document.querySelector(".buttonBlue")?.addEventListener("click", () => {
+        if (ws && isConnected) {
+            ws.send("start");
+            updateStatus("Startcommando verzonden...");
+        }
+    });
+
+    document.querySelector(".buttonRed")?.addEventListener("click", () => {
+        if (ws && isConnected) {
+            ws.send("noodstop");
+            updateStatus("Noodstop geactiveerd!");
+        }
+    });
+}
+
+// Timer functie (indien nodig)
+function updateTimer() {
+    const timerElement = document.getElementById("timer");
+    if (timerElement) {
+        // Implementeer je timer logica hier
+        // Bijvoorbeeld: timerElement.textContent = new Date().toLocaleTimeString();
+    }
+}
+
+// Initialisatie
+function init() {
+    connectWebSocket();
+    setupButtonListeners();
+    setInterval(updateTimer, 1000); // Update timer elke seconde
+}
+
+// Start wanneer de pagina geladen is
+document.addEventListener("DOMContentLoaded", init);

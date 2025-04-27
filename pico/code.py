@@ -7,88 +7,63 @@ import pico.team510.rijden as rijden
 
 from adafruit_httpserver import Server, Request, Response, GET, Websocket
 
-score = 0
-last_score_sent = time.monotonic()
 
-previous_state = False  # Neem aan dat de motor eerst uit is
-motor_running = False #variabele voor de grijpfunctie aan te roepen als deeze true wordt
 
 SSID = "PICO-TEAM-510"  # Verander X naar groepsnummer
 PASSWORD = "CENTRIS123"  # Verander voor veiligheidsredenen
 
-wifi.radio.start_ap(ssid=SSID, password=PASSWORD)
-
-# print IP adres
-print("My IP address is", wifi.radio.ipv4_address_ap)
-
-pool = socketpool.SocketPool(wifi.radio)
-server = Server(pool, "/static", debug=True)
+# Initialisatie
+score = 0
+motor_running = False
 websocket = None
-led_blinking = False
-led_state = False
+
+# WiFi Access Point
+wifi.radio.start_ap(ssid=SSID, password=PASSWORD)
+print("AP IP:", wifi.radio.ipv4_address_ap)
+
+# Hardware
 led = digitalio.DigitalInOut(board.LED)
 led.direction = digitalio.Direction.OUTPUT
 
-# Deze functie wordt uitgevoerd wanneer de server een HTTP request ontvangt
+# Server setup
+pool = socketpool.SocketPool(wifi.radio)
+server = Server(pool, "/static")
+
+
 @server.route("/connect-websocket", GET)
 def connect_client(request: Request):
-    global websocket  # pylint: disable=global-statement
-
-    if websocket is not None:
-        websocket.close()  # Close any existing connection
-
+    global websocket
+    if websocket:
+        websocket.close()
     websocket = Websocket(request)
-
     return websocket
+
 
 server.start(str(wifi.radio.ipv4_address_ap), 80)
 
+# Hoofdlus
 while True:
     server.poll()
-    if websocket is not None:
+
+    # Verwerk commando's
+    if websocket:
         data = websocket.receive(fail_silently=True)
-        if data is not None:
-            global previous_state
-            # Check if the received data is "test"
-            if data == 'start':
-                global motor_running
-                motor_running = True
-                rijden.go() # test
-                led.value = True
-                time.sleep(0.1)
-                led.value = False
-                time.sleep(0.1)
-                led.value = True
-                time.sleep(0.1)
-                led.value = False
-                time.sleep(0.1)
-                led.value = True
-                time.sleep(0.1)
-                led.value = False
-                websocket.send_message("success", fail_silently=True)
-            elif data == "noodstop":
-                global motor_running
-                motor_running = False
-                rijden.motorR_uit()
-                rijden.motorL_uit()
-                led.value = True
-                time.sleep(0.1)
-                led.value = False
-                time.sleep(0.1)
-                led.value = True
-                time.sleep(0.1)
-                led.value = False
-                time.sleep(0.1)
-                led.value = True
-                time.sleep(0.1)
-                led.value = False
-                websocket.send_message("success", fail_silently=True)
-            else:
-                websocket.send_message(data, fail_silently=True)
-# live score
-        if motor_running and rijden.grijp_actief:  # Check of grijpcyclus bezig is
+        if data == 'start':
+            motor_running = True
+            rijden.go()
+            websocket.send_message("started")
+
+        elif data == "noodstop":
+            motor_running = False
+            rijden.motorR_uit()
+            rijden.motorL_uit()
+            websocket.send_message("stopped")
+
+    # Score update (minimale aanpassing)
+    if motor_running:
+        if rijden.grijp():  # Grijpcyclus voltooid
             score += 100
-            if websocket is not None:
+            if websocket:
                 websocket.send_message(f"score:{score}", fail_silently=True)
-            time.sleep(0.5)  #
+
     time.sleep(0.1)

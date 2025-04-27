@@ -5,6 +5,7 @@ import time
 import board
 import pwmio
 import digitalio
+import math
 import analogio
 from adafruit_motor import servo
 
