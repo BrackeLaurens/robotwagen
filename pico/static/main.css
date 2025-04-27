@@ -1,19 +1,141 @@
-html { 
-    font-family: Helvetica; 
-    display: inline-block; 
-    margin: 0px auto; 
+/* Global styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f5f7fa;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+article {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Timer and Score styles */
+.timer {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: #2c3e50;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+#live-score {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0066ff;
+}
+
+#pico-data {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
     text-align: center;
 }
 
-.buttonRed { 
-    background-color: #D11D53; 
-    border: 2px solid #000000;
-    color: white; 
-    padding: 15px 32px; 
-    text-align: center; 
-    text-decoration: none; 
-    display: inline-block; 
-    font-size: 30px; 
-    margin: 4px 2px; 
-    cursor: pointer; 
-} 
+/* Control Panel styles */
+.control-panel {
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 800px;
+}
+
+.control-panel h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.button-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+button {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.buttonRed {
+    background: #e74c3c;
+    color: white;
+}
+
+.buttonBlue {
+    background: #3498db;
+    color: white;
+}
+
+.buttonRed:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+.buttonBlue:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.buttonRed:active, .buttonBlue:active {
+    transform: scale(0.98);
+}
+
+/* Status styles */
+#status {
+    font-weight: bold;
+    transition: color 0.3s ease;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.status-connected {
+    color: #27ae60;
+    background: #e8f5e9;
+}
+
+.status-disconnected {
+    color: #e74c3c;
+    background: #fde8e8;
+}
+
+/* Animation for score updates */
+.score-update {
+    animation: pulse 0.5s;
+    color: #0066ff;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}

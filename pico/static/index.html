@@ -11,20 +11,28 @@
   <article>
     <header>
       <h1>Welkom bij de Robotwagen</h1>
+      <p class="subtitle">Team 510 - Robotica Competitie</p>
     </header>
-    <p><div class="timer" id="timer">00:00:00</div></p>
-    <p>Live score: <span id="live-score">0</span></p>
-    <div id="pico-data">Waiting for data...</div>
+    
+    <div class="info-panel">
+      <div class="timer" id="timer">00:00:00</div>
+      <div class="score-container">
+        <span class="score-label">Live score:</span>
+        <span id="live-score">0</span>
+      </div>
+      <div id="pico-data">Waiting for data...</div>
+    </div>
   </article>
 
-  <center><h1>Control Panel</h1></center><br><br>
-  <button class="buttonRed" onclick="sendCommand('noodstop')">NOODKNOP</button>
-  <button class="buttonBlue" onclick="sendCommand('start')">START</button>
-  <br><br>
+  <div class="control-panel">
+    <h1>Control Panel</h1>
+    <div class="button-container">
+      <button class="buttonRed" onclick="sendCommand('noodstop')">NOODKNOP</button>
+      <button class="buttonBlue" onclick="sendCommand('start')">START</button>
+    </div>
+    <div id="status" class="status-disconnected">Status: Disconnected</div>
+  </div>
 
-  <h3 id="status">Status: Disconnected</h3>
-
-  <!-- Eén enkele script  -->
   <script src="main.js"></script>
 </body>
 </html>
