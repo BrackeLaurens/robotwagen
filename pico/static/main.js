@@ -74,7 +74,7 @@ function sendCommand(command) {
         if (command === 'kalibreer') {
             document.getElementById("status").textContent = "Status: kalibreren..."
         }
-    else {
+    } else {
         alert("Not connected to the PICO");
     }
 }
