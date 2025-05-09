@@ -71,8 +71,10 @@ function sendCommand(command) {
         if (command === 'start') {
             startTimer();
         }
-
-    } else {
+        if (command === 'kalibreer') {
+            document.getElementById("status").textContent = "Status: kalibreren..."
+        }
+    else {
         alert("Not connected to the PICO");
     }
 }
