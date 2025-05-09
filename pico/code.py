@@ -240,6 +240,7 @@ while True:
             print('Begin kalibratie')
             kalibreer_drempelwaardes()
             print('Kalibratie voltooid.')
+            data= None
     if motor_running:
         vooruit(snelheid)
         diff = meet_ldr(ldr_left) - meet_ldr(ldr_right)
