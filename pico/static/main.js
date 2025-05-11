@@ -211,6 +211,12 @@ function setupButtonListeners() {
             updateStatus("Noodstop geactiveerd!");
         }
     });
+    document.querySelector(".buttonYellow")?.addEventListener("click", () => {
+        if (ws && isConnected) {
+            ws.send("kalibreer");
+            updateStatus("kalibreren begonnen");
+        }
+    });
 }
 
 // Timer functie (indien nodig)

@@ -36,6 +36,7 @@ line_count = 0
 frontlinecount = 0
 rijden_actief = False
 grijp_actief = False
+score= 0
 
 DREMPEL_ZWARTE_LIJN_links = None
 DREMPEL_ZWARTE_LIJN_rechts = None
@@ -150,10 +151,12 @@ def draai_180_graden(speed):
 
 def grijp():
     global grijp_actief
+    global score
     grijp_actief = True
     for angle in range(0, 175, 10):
         my_servo.angle = angle
         time.sleep(0.05)
+    score +=100
     for angle in range(175, 0, -10):
         my_servo.angle = angle
         time.sleep(0.05)
