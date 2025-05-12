@@ -23,27 +23,27 @@ function connect_socket() {
     });
 
     socket.addEventListener("message", (event) => {
-  console.log("Message from Pico:", event.data);
+        console.log("Message from Pico:", event.data);
 
-  if (event.data.startsWith("score:")) {
-    const score = event.data.split(":")[1];
-    document.getElementById("live-score").textContent = score;
-    return;
-  }
+        if (event.data.startsWith("score:")) {
+            const score = event.data.split(":")[1];
+            document.getElementById("live-score").textContent = score;
+            return;
+        }
 
-  // Andere commando's
-  switch (event.data) {
-    case "start":
-      startTimer();
-      break;
-    case "noodstop":
-      stopTimer();
-      break;
-    default:
-      console.warn("⚠️ Onbekend commando ontvangen:", event.data);
-      break;
-  }
-});
+        // Andere commando's
+        switch (event.data) {
+            case "start":
+            startTimer();
+            break;
+            case "noodstop":
+            stopTimer();
+            break;
+            default:
+            console.warn("⚠️ Onbekend commando ontvangen:", event.data);
+            break;
+        }
+        });
 
 
     socket.addEventListener("error", () => {
