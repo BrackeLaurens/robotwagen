@@ -157,6 +157,8 @@ def grijp():
         my_servo.angle = angle
         time.sleep(0.05)
     score +=100
+    if websocket:
+        websocket.send_message(f"score:{score}")
     for angle in range(175, 0, -10):
         my_servo.angle = angle
         time.sleep(0.05)
