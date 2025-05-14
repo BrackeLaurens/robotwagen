@@ -13,6 +13,7 @@ function connect_socket() {
 
     socket = new WebSocket(`${SERVER_CONFIG.wsUrl}/connect-websocket`);
 
+
     socket.addEventListener("open", () => {
         document.getElementById("status").textContent = "Status: Connected";
     });
@@ -71,10 +72,7 @@ function sendCommand(command) {
         if (command === 'start') {
             startTimer();
         }
-        if (command === 'kalibreer') {
-            document.getElementById("status").textContent = "Status: kalibreren...";
-            console.log("kalibreren begonnen!");
-        }
+
     } else {
         alert("Not connected to the PICO");
     }
@@ -219,14 +217,7 @@ function setupButtonListeners() {
     });
 }
 
-// Timer functie (indien nodig)
-function updateTimer() {
-    const timerElement = document.getElementById("timer");
-    if (timerElement) {
-        // Implementeer je timer logica hier
-        // Bijvoorbeeld: timerElement.textContent = new Date().toLocaleTimeString();
-    }
-}
+
 
 // Initialisatie
 function init() {
