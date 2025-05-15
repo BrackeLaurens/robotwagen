@@ -60,6 +60,11 @@ function disconnect_socket() {
 }
 
 function sendCommand(command) {
+
+    if (command === 'start') {
+        startTimer();
+    }
+
     if (socket != undefined && socket.readyState === WebSocket.OPEN) {
         socket.send(command);
 
@@ -68,13 +73,9 @@ function sendCommand(command) {
             console.log("Emergency stop initiated!");
             stopTimer(); // timer pauzeren/stoppen
         }
-
-        if (command === 'start') {
-            startTimer();
-        }
-
     } else {
-        alert("Not connected to the PICO");
+       alert("Not connected to the PICO");
+       resetTimer();
     }
 }
 
@@ -102,6 +103,13 @@ function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
     }
+}
+
+function resetTimer()
+{
+    stopTimer();
+    totaalSeconden = 0;
+    updateTimerDisplay();
 }
 
 function updateTimerDisplay() {
